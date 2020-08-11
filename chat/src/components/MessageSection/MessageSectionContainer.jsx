@@ -1,5 +1,7 @@
 import MessageSection from './MessageSection';
 import { connect } from 'react-redux';
+import { getMessageToState } from '../../store/messageSection/actions';
+
 
 const mapStateToProps = (state) => {
   return {
@@ -8,7 +10,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-
+  getMessageToState,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageSection);

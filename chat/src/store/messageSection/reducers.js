@@ -1,9 +1,5 @@
 const initialState = {
   messages: [
-    { author: 'test', text: 'hello', id: 1 },
-    { author: 'test', text: 'how are u ?', id: 2 },
-    { author: 'test', text: 'you here ?', id: 3 },
-    { author: 'test', text: 'heey', id: 4 },
   ],
 }
 

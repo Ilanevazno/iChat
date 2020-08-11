@@ -1,37 +1,24 @@
-#!/usr/bin/env node
+const express = require('express');
+const app = express();
+const debug = require('debug')('chat-server:server');
+const http = require('http');
+const cors = require('cors');
+const shortid = require('shortid');
+const bodyParser = require("body-parser");
 
-/**
- * Module dependencies.
- */
+app.use(cors());
+app.use(bodyParser.json());
 
-var app = require('../app');
-var debug = require('debug')('chat-server:server');
-var http = require('http');
-
-/**
- * Get port from environment and store in Express.
- */
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 var port = normalizePort(process.env.PORT || '3010');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
 var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
 
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
@@ -48,10 +35,6 @@ function normalizePort(val) {
 
   return false;
 }
-
-/**
- * Event listener for HTTP server "error" event.
- */
 
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -77,10 +60,6 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string'
@@ -91,12 +70,73 @@ function onListening() {
 
 const options = { /* ... */ };
 
+let rooms = {
+
+};
+
+app.post('/users', urlencodedParser, (req, res) => {
+  let { userName, roomId } = req.body;
+
+  // Если нет id комнаты, генерируем
+  if (roomId === '') {
+    roomId = shortid.generate()
+  } else {
+    // проверяем наличие дублирующего имени пользователя в комнате
+    const isFoundedSomeUser = rooms[roomId] ? !!rooms[roomId].filter(user => user.userName === userName).length : false;
+
+    console.log(rooms[roomId], 'username =>', userName);
+
+    if (isFoundedSomeUser) return res.send({
+      type: 'error',
+      message: 'Пользователь уже существует в комнате',
+    });
+  };
+
+  rooms[roomId] ? rooms[roomId].push({ userName }) : rooms[roomId] = [{ userName }];
+
+  res.send({
+    type: 'success',
+  });
+
+  console.log('ready', rooms);
+});
+
 const io = require('socket.io')(server, options);
 
 io.on('connection', socket => {
+  socket.on('join-room', id => {
+    socket.join(id);
+    console.log('connected', id);
+  });
+
   socket.on('new-message', (message) => {
-    socket.broadcast.emit('chat-message', message);
+  //socket.broadcast.emit('chat-message', message);
+
+  io.to(message.roomId).emit('chat-message', message);
+
+    console.log('Сообщение', message);
   })
+  // const roomId = shortid.generate();
+  // socket.join(roomId);
+
+  // socket.on('new-user', (name) => {
+  //   rooms[roomId] ? rooms[roomId].push({ name }) : rooms[roomId] = [{ name }];
+
+  //   console.log('1');
+
+  //   socket.broadcast.emit('new-user-response', { isConnected: true, roomId });
+  // })
+
+  // socket.on('request-room-id', () => {
+  //   socket.broadcast.emit('response-room-id', {
+  //     message: `You joined with room id ${roomId}`,
+  //     roomId,
+  //   });
+  // })
+
+  // socket.on('new-message', (message) => {
+  //   socket.broadcast.emit('chat-message', message);
+  // })
 });
 
 // server.listen(3000);

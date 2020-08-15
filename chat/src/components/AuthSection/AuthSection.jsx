@@ -1,13 +1,12 @@
 import React from 'react';
 import { Modal, Button, Input, Form } from 'antd';
-import { socket } from '../../App';
+import shortid from 'shortid';
 
 export default class AuthSection extends React.Component {
   constructor() {
     super();
     this.state = {
       fieldTextCurrent: '',
-      isFailedValidate: false,
     }
   }
 
@@ -26,25 +25,30 @@ export default class AuthSection extends React.Component {
     if (isFormReady) {
       this.props.joinToTheRoom({
         userName: this.state.fieldTextCurrent,
-        roomId,
+        roomId: roomId ? roomId : shortid.generate(),
       });
     }
   }
 
   validateForm() {
-    let isFailedValidate = false;
-
     if (this.state.fieldTextCurrent === '') {
-      isFailedValidate = true;
+      this.props.setAuthStatus({
+        isFailedAuth: true,
+        authStatus: 'Поле не может быть пустым',
+      });
     } else {
-      isFailedValidate = false;
+      // this.registerUser();
+      // this.props.setAuthStatus({
+      //   isFailedAuth: false,
+      // });
+      return true;
     }
 
     this.setState(() => ({
-      isFailedValidate,
+      // isFailedValidate,
     }));
 
-    return !isFailedValidate;
+    // return !isFailedValidate;
   }
 
   render() {
@@ -62,7 +66,7 @@ export default class AuthSection extends React.Component {
           ]}
         >
           <p>Придумайте никнейм</p>
-          <Form.Item validateStatus={this.state.isFailedValidate && "error"} help={this.state.isFailedValidate && "Поле не должно быть пустым"}>
+          <Form.Item validateStatus={this.props.isFailedAuth && "error"} help={this.props.isFailedAuth && this.props.authStatus}>
             <Input placeholder="Введите текст" value={this.state.fieldTextCurrent} onChange={this.changeTextInputText.bind(this)} />
           </Form.Item>
         </Modal>

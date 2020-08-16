@@ -39,8 +39,6 @@ class Main {
         // проверяем наличие дублирующего имени пользователя в комнате
         const isFoundedSomeUser = this.rooms[roomId] ? !!this.rooms[roomId].filter(user => user.userName === userName).length : false;
 
-        console.log(this.rooms[roomId], 'username =>', userName);
-
         if (isFoundedSomeUser) return res.send({
           type: 'error',
           message: 'Пользователь с данным именем уже находится в комнате, попробуйте другой ник.',
@@ -55,6 +53,12 @@ class Main {
     });
   }
 
+  updateOnlineCountInTheRoom(currentRoom) {
+    io.to(currentRoom).emit('update-online-count', {
+      currentRoom: this.rooms[currentRoom],
+    });
+  }
+
   listenSocketIoRequests() {
     io.on('connection', socket => {
       socket.on('join-room', data => {
@@ -62,6 +66,8 @@ class Main {
         const currentUser = data.userName;
 
         socket.join(currentRoom);
+
+        this.updateOnlineCountInTheRoom(currentRoom);
 
         io.to(currentRoom).emit('chat-message', {
           author: 'System',
@@ -73,6 +79,9 @@ class Main {
             author: 'System',
             text: `${currentUser} вышел из комнаты`,
           })
+
+          this.rooms[currentRoom] = this.rooms[currentRoom].filter(user => user.userName !== currentUser);
+          this.updateOnlineCountInTheRoom(currentRoom);
         });
       });
 

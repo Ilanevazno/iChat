@@ -25,7 +25,7 @@ export const joinToTheRoom = data => async (dispatch) => {
       }));
     } else {
       dispatch(setAuthStatus({
-        isFailedAuth: true,
+        isAuthComplected: false,
         authStatus: response.data.message
       }));
     }

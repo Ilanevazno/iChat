@@ -61,6 +61,8 @@ class Main {
 
   listenSocketIoRequests() {
     io.on('connection', socket => {
+      let isVideoCalling = true;
+  
       socket.on('join-room', data => {
         const currentRoom = data.roomId ? data.roomId : shortid.generate();
         const currentUser = data.userName;
@@ -88,6 +90,11 @@ class Main {
       socket.on('new-message', (message) => {
         io.to(message.roomId).emit('chat-message', message);
         console.log('Сообщение', message);
+      })
+
+      socket.on('request-video-calling', (stream) => {
+        console.log(stream);
+        // io.to(roomId).emit('video-started', stream, roomId);
       })
     });
   };

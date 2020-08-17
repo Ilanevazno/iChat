@@ -3,6 +3,7 @@ import { Input, Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import { Wrapper } from './styled';
 import shortid from 'shortid';
+import moment from 'moment';
 
 export default class NewMessageArea extends React.Component {
   constructor() {
@@ -15,11 +16,15 @@ export default class NewMessageArea extends React.Component {
   onSendMessage(e) {
     e.preventDefault();
 
+    window.moment = moment;
+
     this.props.sendNewMessage({
       id: shortid.generate(),
       author: this.props.userName,
       text: this.state.fieldTextCurrent,
       roomId: this.props.roomId,
+      date: moment().format('MM-DD-YYYY HH:mm'),
+      time: moment().format('HH:mm'),
     });
 
     this.setState((state, props) => {

@@ -4,8 +4,12 @@ import { Card } from 'antd';
 export default class Message extends React.Component {
   render() {
     return (
-      <Card title={this.props.author} type="inner" style={{ marginTop: 25, marginBottom: 25, }}>
-        {this.props.text}
+      <Card
+        title={`${this.props.message.author} ${this.props.message.time ? this.props.message.time : ''}`}
+        type="inner"
+        style={{ marginBottom: 25, }}
+      >
+        {this.props.message.text}
       </Card>
     );
   }

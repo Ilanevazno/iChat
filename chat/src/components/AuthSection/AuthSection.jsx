@@ -33,22 +33,12 @@ export default class AuthSection extends React.Component {
   validateForm() {
     if (this.state.fieldTextCurrent === '') {
       this.props.setAuthStatus({
-        isFailedAuth: true,
+        isAuthComplected: false,
         authStatus: 'Поле не может быть пустым',
       });
     } else {
-      // this.registerUser();
-      // this.props.setAuthStatus({
-      //   isFailedAuth: false,
-      // });
       return true;
     }
-
-    this.setState(() => ({
-      // isFailedValidate,
-    }));
-
-    // return !isFailedValidate;
   }
 
   render() {
@@ -66,7 +56,7 @@ export default class AuthSection extends React.Component {
           ]}
         >
           <p>Придумайте никнейм</p>
-          <Form.Item validateStatus={this.props.isFailedAuth && "error"} help={this.props.isFailedAuth && this.props.authStatus}>
+          <Form.Item validateStatus={!!this.props.authStatus && "error"} help={!!this.props.authStatus && this.props.authStatus}>
             <Input placeholder="Введите текст" value={this.state.fieldTextCurrent} onChange={this.changeTextInputText.bind(this)} />
           </Form.Item>
         </Modal>

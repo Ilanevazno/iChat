@@ -9,22 +9,24 @@ const { Content, Footer } = Layout;
 
 export default class Index extends React.Component {
   render() {
-    return <Layout style={{ height: '100vh' }}>
-      <PageHeader userName={this.props.userName} />
-      <Content className="site-layout" style={{ marginTop: 64, background: 'white', height: '100%' }}>
-        <div className="site-layout-background" style={{ padding: 24, height: '100%' }}>
-        {
-          this.props.isAuthComplected ? <MessageSectionContainer /> : <AuthSection
-
-          joinToTheRoom={this.props.joinToTheRoom}
-          authStatus={this.props.authStatus}
-          isFailedAuth={this.props.isFailedAuth}
-          setAuthStatus={this.props.setAuthStatus}
-          />
-        }
-        </div>
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>Chat homework for Fora soft</Footer>
-    </Layout>
+    return (
+      <Layout style={{ height: '100vh' }}>
+        <PageHeader userName={this.props.userName} />
+        <Content className="site-layout" style={{ marginTop: 64, background: 'white', height: '100%' }}>
+          <div className="site-layout-background" style={{ padding: 24, height: '100%' }}>
+            {
+              this.props.isAuthComplected
+                ? <MessageSectionContainer />
+                : <AuthSection
+                  joinToTheRoom={this.props.joinToTheRoom}
+                  authStatus={this.props.authStatus}
+                  isAuthComplected={this.props.isAuthComplected}
+                  setAuthStatus={this.props.setAuthStatus}
+                />
+            }
+          </div>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>Chat homework for Fora soft</Footer>
+      </Layout>)
   }
 }

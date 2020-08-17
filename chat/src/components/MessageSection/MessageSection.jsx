@@ -1,27 +1,16 @@
 import React from 'react';
+import { Row, Col, Layout } from 'antd';
+import shortid from 'shortid';
 import { MessagesListContainer } from './styled';
-import NewMessageAreaContainer from '../NewMessageArea/NewMessageAreaContainer';
+import { socket } from '../../App';
 import Message from '../Message/Message';
 import RoomUsersData from '../RoomUsersData/RoomUsersData';
-import { socket } from '../../App';
-import { Row, Col, Layout, Button } from 'antd';
-import { VideoCameraOutlined } from '@ant-design/icons';
-import VideoCalling from '../VideoCalling/VideoCalling';
-import shortid from 'shortid';
-import Peer from 'peerjs';
+import NewMessageAreaContainer from '../NewMessageArea/NewMessageAreaContainer';
 
 const { Content } = Layout;
 
 const styles = {
-  wrapper: { height: '93%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
-  messagesTopMenu: {
-    borderTop: '1px solid gainsboro',
-    borderLeft: '1px solid gainsboro',
-    borderRight: '1px solid gainsboro',
-    borderTopLeftRadius: '10px',
-    borderTopRightRadius: '10px',
-    padding: '0.5rem',
-  },
+  wrapper: { height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
   statsWrapper: {
     border: '1px solid gainsboro',
     borderBottomLeftRadius: '11px',
@@ -39,71 +28,37 @@ export default class MessageSection extends React.Component {
 
   componentDidMount() {
     socket.on('chat-message', (message) => {
+      // Изначально записываем сообщение в стейт, после чего магия редакса его отрисует.
       this.props.getMessageToState(message);
 
+      // необходимо для того, чтобы во время получения новых сообщений, прокручивался скролл вниз.
       if (!this.props.isVideoCallingNow) this.messagesContainer.current.scrollTop = this.messagesContainer.current.scrollHeight;
     });
 
     socket.on('update-online-count', (message) => {
+      // При получении соответствующего эвента обновляем статистику пользователей онлайн.
       this.props.updateRoomOnlineUsers(message);
     })
-
-    socket.on('video-started', (stream, roomId) => {
-      console.log('видео старт', stream, roomId);
-    })
-  }
-
-  async handleVideoCall() {
-    let stream = null;
-
-    if (!this.props.isVideoCallingNow) {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-          .then(stream => {
-            console.log('стрим', stream)
-            socket.emit('request-video-calling', stream);
-          });
-      } catch (err) {
-        console.log('При создании видеозвонка произошла ошибка', err);
-      }
-    } else {
-      this.props.handleVideoCalling({ isVideoCallingNow: false });
-    }
   }
 
   render() {
     return (
       <Content style={{ height: '100%' }}>
-        <Row style={styles.messagesTopMenu}>
-          <Button
-            type="primary"
-            shape="round"
-            icon={<VideoCameraOutlined />}
-            size={'large'}
-            onClick={this.handleVideoCall.bind(this)}
-          >
-            {this.props.isVideoCallingNow ? 'Завершить видеозвонок' : 'Начать видеозвонок'}
-          </Button>
+        <Row style={styles.wrapper}>
+          <Col span={3} style={styles.statsWrapper}>
+            <RoomUsersData usersInTheRoom={this.props.usersInTheRoom} />
+          </Col>
+          <Col span={21} style={styles.messagesWrapper}>
+            <MessagesListContainer ref={this.messagesContainer}>
+              {this.props.messages.length
+                ? this.props.messages.map(message =>
+                  <Message key={message.id ? message.id : shortid.generate()} message={message}></Message>)
+                : 'Нет сообщений'
+              }
+            </MessagesListContainer>
+            <NewMessageAreaContainer />
+          </Col>
         </Row>
-        {
-          !this.props.isVideoCallingNow
-            ? <Row style={styles.wrapper}>
-              <Col span={3} style={styles.statsWrapper}>
-                <RoomUsersData usersInTheRoom={this.props.usersInTheRoom} />
-              </Col>
-              <Col span={21} style={styles.messagesWrapper}>
-                <MessagesListContainer ref={this.messagesContainer}>
-                  {this.props.messages.length
-                    ? this.props.messages.map(message =>
-                      <Message key={message.id ? message.id : shortid.generate()} message={message}></Message>)
-                    : 'Нет сообщений'
-                  }
-                </MessagesListContainer>
-                <NewMessageAreaContainer />
-              </Col>
-            </Row>
-            : <VideoCalling usersInTheCall={this.props.usersInTheCall} />
-        }
       </Content>
     )
   }

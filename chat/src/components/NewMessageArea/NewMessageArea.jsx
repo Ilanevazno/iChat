@@ -16,27 +16,27 @@ export default class NewMessageArea extends React.Component {
   onSendMessage(e) {
     e.preventDefault();
 
-    window.moment = moment;
+    if (this.state.fieldTextCurrent !== '') {
+      this.props.sendNewMessage({
+        id: shortid.generate(),
+        author: this.props.userName,
+        text: this.state.fieldTextCurrent,
+        roomId: this.props.roomId,
+        date: moment().format('MM-DD-YYYY HH:mm'),
+        time: moment().format('HH:mm'),
+      });
 
-    this.props.sendNewMessage({
-      id: shortid.generate(),
-      author: this.props.userName,
-      text: this.state.fieldTextCurrent,
-      roomId: this.props.roomId,
-      date: moment().format('MM-DD-YYYY HH:mm'),
-      time: moment().format('HH:mm'),
-    });
-
-    this.setState((state, props) => {
-      return { fieldTextCurrent: '' };
-    });
+      this.setState((state, props) => {
+        return { ...this.state, fieldTextCurrent: '' };
+      });
+    }
   }
 
   changeTextInputText(e) {
     const newValue = e.target.value;
 
     this.setState((state, props) => {
-      return { fieldTextCurrent: newValue };
+      return { ...this.state, fieldTextCurrent: newValue };
     });
   }
 

@@ -1,13 +1,14 @@
-import { socket } from "../App";
 import axios from 'axios';
+import { JOIN_ROOM, SET_JOIN_STATUS } from './constant';
+import { socket } from "../App";
 
 const setJoinedRoom = (data) => ({
-  type: 'JOIN_ROOM',
+  type: JOIN_ROOM,
   payload: data,
 });
 
 export const setAuthStatus = (data) => ({
-  type: 'SET_JOIN_STATUS',
+  type: SET_JOIN_STATUS,
   payload: data,
 });
 

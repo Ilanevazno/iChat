@@ -20,6 +20,9 @@ export default class AuthSection extends React.Component {
 
   registerUser() {
     const isFormReady = this.validateForm();
+    // Была идея сделать либо через window.location.hash, либо так.
+    // данное решение показалось более красивым, т.к для входа в комнату
+    // у нас будет просто URL вида http://host.ru/testRoom
     const roomId = window.location.pathname.replace('/', '');
 
     if (isFormReady) {
@@ -48,7 +51,6 @@ export default class AuthSection extends React.Component {
           title="Вход"
           centered
           visible
-          onOk={() => this.setModal2Visible(false)}
           footer={[
             <Button key="submit" type="primary" onClick={this.registerUser.bind(this)}>
               Войти

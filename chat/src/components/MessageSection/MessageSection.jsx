@@ -10,14 +10,24 @@ import NewMessageAreaContainer from '../NewMessageArea/NewMessageAreaContainer';
 const { Content } = Layout;
 
 const styles = {
-  wrapper: { height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
+  wrapper: {
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
   statsWrapper: {
     border: '1px solid gainsboro',
     borderBottomLeftRadius: '11px',
+    borderTopLeftRadius: '11px',
     height: '100%',
     overflowY: 'scroll',
   },
-  messagesWrapper: { height: '100%', display: 'flex', flexDirection: 'column' },
+  messagesWrapper: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    margin: '0 auto',
+  },
 };
 
 export default class MessageSection extends React.Component {
@@ -45,10 +55,10 @@ export default class MessageSection extends React.Component {
     return (
       <Content style={{ height: '100%' }}>
         <Row style={styles.wrapper}>
-          <Col span={3} style={styles.statsWrapper}>
+          <Col span={0} lg={3} style={styles.statsWrapper}>
             <RoomUsersData usersInTheRoom={this.props.usersInTheRoom} />
           </Col>
-          <Col span={21} style={styles.messagesWrapper}>
+          <Col span={24} lg={21} style={styles.messagesWrapper}>
             <MessagesListContainer ref={this.messagesContainer}>
               {this.props.messages.length
                 ? this.props.messages.map(message =>

@@ -1,0 +1,12 @@
+{
+  "name": "ilya-chat",
+  "version": "1.0.0",
+  "description": "Пет-проект для применения интересных технологий на основе real-time чата",
+  "scripts": {
+    "init": "bash ./scripts/install_deps.sh",
+    "start": "bash ./scripts/start.sh"
+  },
+  "dependencies": {
+    "create-next-app": "^10.0.4"
+  }
+}

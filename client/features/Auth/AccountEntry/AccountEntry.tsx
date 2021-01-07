@@ -10,6 +10,7 @@ import {
 
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Link from "@material-ui/core/Link";
 
 import * as S from "./AccountEntry.styled";
 
@@ -18,9 +19,15 @@ const InputText = ({ label, ...props }: FieldAttributes<any>) => {
   return (
     <>
       <label>
-        <TextField label={label} id="standard-basic" {...field} {...props} />
+        <TextField
+          error={meta.touched && meta.error}
+          helperText={meta.touched && meta.error && meta.error}
+          label={label}
+          id="standard-basic"
+          {...field}
+          {...props}
+        />
       </label>
-      {meta.touched && meta.error ? <div>{meta.error}</div> : null}
     </>
   );
 };
@@ -40,6 +47,10 @@ const AccountEntry = memo(() => (
         errors.email = "Required!";
       }
 
+      if (!values.password) {
+        errors.password = "Required!";
+      }
+
       return errors;
     }}
     onSubmit={(values, { setSubmitting }) => {
@@ -55,20 +66,10 @@ const AccountEntry = memo(() => (
           <S.Title>Войдите в аккаунт</S.Title>
         </S.FormElement>
         <S.FormElement>
-          <InputText
-            id="standard-basic"
-            name="email"
-            type="email"
-            label="Email"
-          />
+          <InputText name="email" type="email" label="Email" />
         </S.FormElement>
         <S.FormElement>
-          <InputText
-            id="standard-basic"
-            name="password"
-            type="password"
-            label="Пароль"
-          />
+          <InputText name="password" type="password" label="Пароль" />
         </S.FormElement>
         <S.FormElement>
           <Button
@@ -79,6 +80,9 @@ const AccountEntry = memo(() => (
           >
             Вход
           </Button>
+          <Link href="#" onClick={() => {}}>
+            <S.Text>У меня нет аккаунта</S.Text>
+          </Link>
         </S.FormElement>
       </Form>
     )}

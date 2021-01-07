@@ -31,6 +31,10 @@ const h3 = ({ color }: Title) => css`
   line-height: 1.5rem;
 `;
 
-const titles = { h1, h2, h3 };
+const text = () => css`
+  font-family: ${typography.secondaryFontName};
+`;
+
+const titles = { h1, h2, h3, text };
 
 export { titles };

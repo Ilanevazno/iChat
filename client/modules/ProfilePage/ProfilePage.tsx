@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import { PageTemplate } from "../../features/PageTemplate/PageTemplate";
 import { AccountEntry } from "../../features/Auth/AccountEntry/AccountEntry";
+import { RegisterAccount } from "../../features/Auth/RegisterAccount/RegisterAccount";
 import { Modal } from "../../components/Modal/Modal";
 import { AppState } from "../../redux/model";
 
@@ -24,7 +25,7 @@ const Page = memo(({ isAuthDone }: Props) => (
     Привет мир!
     {!isAuthDone && (
       <Modal isOpened={true}>
-        <AccountEntry />
+        <RegisterAccount />
       </Modal>
     )}
   </PageTemplate>

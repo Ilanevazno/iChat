@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { titles } from '../../../shared/mixins/titles.styled';
 const FormElement = styled.div`
-    width: 21rem;
+    width: 25rem;
     margin: 1.5rem auto;
     text-align: center;
     display: flex;
@@ -22,4 +22,9 @@ const Text = styled.span`
   ${titles.text()};
 `;
 
-export { FormElement, Title, Text };
+const FieldsSection = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export { FormElement, FieldsSection, Title, Text };

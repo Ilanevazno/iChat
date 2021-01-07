@@ -1,5 +1,8 @@
-import { PageTemplate } from "../components/PageTemplate/PageTemplate";
+import { useRouter } from "next/router";
+import { memo } from "react";
 
-const MainPage = () => <PageTemplate />;
+import { ProfilePage } from "../modules/ProfilePage/ProfilePage";
+
+const MainPage = memo(() => <ProfilePage />);
 
 export default MainPage;
